@@ -8,9 +8,10 @@ System requirements:
 
 #### Local development
 - setup Docker and Docker Compose
-- `docker-compose build`
-- `docker-compose run --rm composer i`
-- `docker-compose run --rm app php bin/console purchase-cigarettes 2 10.00`
+- build containers `docker-compose build`
+- install packages `docker-compose run --rm composer i`
+- run main command `docker-compose run --rm app php bin/console purchase-cigarettes 2 10.00`
+- run test `docker-compose run --rm app php vendor/bin/phpunit`
 
 ### Intro
 Hi and welcome to limango! You're now going to participate in

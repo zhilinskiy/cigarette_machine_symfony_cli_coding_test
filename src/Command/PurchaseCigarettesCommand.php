@@ -14,11 +14,16 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class PurchaseCigarettesCommand extends Command
 {
+    // the command description shown when running "php bin/console list"
+    protected static $defaultDescription = 'Purchase cigarettes';
+
     /**
      * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
+        // the command help shown when running the command with the "--help" option
+        $this->setHelp('This command allows you to purchase cigarettes');
         $this->addArgument('packs', InputArgument::REQUIRED, "How many packs do you want to buy?");
         $this->addArgument('amount', InputArgument::REQUIRED, "The amount in euro.");
     }
@@ -27,9 +32,9 @@ class PurchaseCigarettesCommand extends Command
      * @param InputInterface   $input
      * @param OutputInterface $output
      *
-     * @return int|null|void
+     * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $itemCount = (int) $input->getArgument('packs');
         $amount = (float) \str_replace(',', '.', $input->getArgument('amount'));
@@ -52,5 +57,6 @@ class PurchaseCigarettesCommand extends Command
         ;
         $table->render();
 
+        return Command::SUCCESS;
     }
 }
