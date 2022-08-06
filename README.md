@@ -6,6 +6,12 @@ System requirements:
 - PHP
 - Composer
 
+#### Local development
+- setup Docker and Docker Compose
+- `docker-compose build`
+- `docker-compose run --rm composer i`
+- `docker-compose run --rm app php bin/console purchase-cigarettes 2 10.00`
+
 ### Intro
 Hi and welcome to limango! You're now going to participate in
 a short coding test to test to your ability to think logical, 

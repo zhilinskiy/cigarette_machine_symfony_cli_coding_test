@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+    app:
+        user: ${DOCKER_USER:-1000}:${DOCKER_UID:-1001}
+        build:
+            args:
+                user: ${DOCKER_USER:-1000}
+                uid: ${DOCKER_UID:-1001}
+            context: ./
+            dockerfile: .docker/Dockerfile
+        environment:
+            PHP_IDE_CONFIG: 'serverName=cigarette-machine.local'
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        image: ${DOCKER_IMAGE_NAME:-cigarette-machine}-app-image
+        container_name: ${DOCKER_IMAGE_NAME:-cigarette-machine}-app-container
+        restart: 'no'
+        working_dir: /var/www
+        tty: true
+        volumes:
+            - ./:/var/www
+    composer:
+        user: ${DOCKER_USER:-1000}:${DOCKER_UID:-1001}
+        image: composer:2.3.10
+        restart: 'no'
+        working_dir: /var/www
+        tty: true
+        volumes:
+            - ./:/var/www
