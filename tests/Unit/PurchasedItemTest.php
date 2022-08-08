@@ -6,6 +6,9 @@ namespace Tests\Unit;
 use App\Machine\PurchasedItem;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers PurchasedItem
+ */
 class PurchasedItemTest extends TestCase
 {
 
