@@ -1,7 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Machine\CigaretteMachine;
+use App\Machine\PurchaseTransaction;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -29,32 +32,45 @@ class PurchaseCigarettesCommand extends Command
     }
 
     /**
-     * @param InputInterface   $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $itemCount = (int) $input->getArgument('packs');
-        $amount = (float) \str_replace(',', '.', $input->getArgument('amount'));
+        $itemCount = (int)$input->getArgument('packs');
+        $amount = (float)\str_replace(',', '.', (string)$input->getArgument('amount'));
+        if ($itemCount < 1) {
+            $output->writeln('Packs amount should be 1 or more');
+
+            return Command::FAILURE;
+        }
+        if ($amount <= 0) {
+            $output->writeln('Money amount should be more than 0');
+
+            return Command::FAILURE;
+        }
 
 
-        // $cigaretteMachine = new CigaretteMachine();
-        // ...
+        $cigaretteMachine = new CigaretteMachine();
+        $transaction = new PurchaseTransaction($itemCount, $amount);
+        $purchase = $cigaretteMachine->execute($transaction);
 
-        $output->writeln('You bought <info>...</info> packs of cigarettes for <info>...</info>, each for <info>...</info>. ');
+        $summary = 'You bought <info>%d</info> packs of cigarettes for <info>-%.2F€</info>, each for <info>-%.2F€</info>.';
+        $output->writeln(sprintf(
+            $summary,
+            $purchase->getItemQuantity(),
+            $purchase->getTotalAmount(),
+            CigaretteMachine::ITEM_PRICE,
+        ));
         $output->writeln('Your change is:');
 
         $table = new Table($output);
-        $table
-            ->setHeaders(array('Coins', 'Count'))
-            ->setRows(array(
-                // ...
-                array('0.02', '0'),
-                array('0.01', '0'),
-            ))
-        ;
+        $table->setHeaders(['Coins', 'Count']);
+        foreach ($purchase->getChange() as $coin => $amount) {
+            $table->addRow([$coin, $amount]);
+        }
         $table->render();
 
         return Command::SUCCESS;
